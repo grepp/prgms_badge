@@ -11,7 +11,7 @@ BASE_URL = 'https://programmers.co.kr/api/job_profiles/public/'
 
 def dark_profile(request, cover_name):
   width = 400
-  height = 200
+  height = 150
 
   public_profile, created = PublicProfile.objects.get_or_create(cover_name = cover_name)
 
@@ -34,7 +34,9 @@ def dark_profile(request, cover_name):
 
   primary_tags_svg = get_primary_tags_svg(public_profile.primary_tags.names())
 
-  secondary_tags_svg = get_secondary_tags_svg(public_profile.secondary_tags.names())
+  secondary_tags_svg, y_lines = get_secondary_tags_svg(public_profile.secondary_tags.names())
+
+  height += 30 + y_lines * 10 if y_lines > 0 else 0
 
   svg = '''
     <svg height="{height}" width="{width}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}">
@@ -95,9 +97,6 @@ def dark_profile(request, cover_name):
             주요 기술
           </text>
           {primary_tags_svg}
-          <text class="cls-6" transform="translate(25.39 136.97)">
-            기술 태그
-          </text>
           {secondary_tags_svg}
         </g>
       </g>
@@ -163,8 +162,14 @@ def get_secondary_tags_svg(tags):
   rect_x = RECT_START_X
   rect_y = RECT_START_Y
   rect_height = 15
+  y_lines = 1
 
-  ret = ''
+  if len(tags) > 0:
+    ret = '<text class="cls-6" transform="translate(25.39 136.97)">기술 태그</text>'
+  else:
+    ret = ''
+    y_lines = 0
+
 
   for tag in tags:
     width = get_tag_rect_width_by_tag_str(tag)
@@ -172,6 +177,7 @@ def get_secondary_tags_svg(tags):
     if rect_x + width > MAX_X:
       rect_x = RECT_START_X
       rect_y = rect_y + rect_height + MARGIN_BETWEEN_TAG
+      y_lines += 1
 
     rect_svg = '<rect class="secondary-tag-rect" x="{x}" y="{y}" width="{width}" height="{height}" rx="{rx}"/>'.format(
       x = rect_x,
@@ -187,11 +193,10 @@ def get_secondary_tags_svg(tags):
       y = rect_y + rect_height * 2 / 3,
     )
 
-    ret += rect_svg + text_svg  
+    ret += rect_svg + text_svg
     rect_x += width + MARGIN_BETWEEN_TAG
-    
 
-  return ret
+  return (ret, y_lines)
 
 
 def get_tag_rect_width_by_tag_str(tag: str):

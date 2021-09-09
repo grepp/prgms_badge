@@ -40,10 +40,12 @@ class PublicProfile(BaseModel):
   )
   primary_tags = TaggableManager(
     through=TaggedPrimaryTag,
-    related_name='primary_tags'
+    related_name='primary_tags',
+    blank=True,
   )
 
   secondary_tags = TaggableManager(
     through=TaggedSecondaryTag,
     related_name='secondary_tags',
+    blank=True,
   )
