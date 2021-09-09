@@ -200,8 +200,8 @@ def get_secondary_tags_svg(tags):
 
 
 def get_tag_rect_width_by_tag_str(tag: str):
-  default_width = 10
+  default_width = 14
   len_blank = tag.count(' ')
   len_without_blank = len(tag) - len_blank
 
-  return default_width + len_blank + len_without_blank * 5.8
+  return default_width + len_blank + len_without_blank * 6
