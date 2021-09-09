@@ -1,18 +1,40 @@
+from django.http.response import Http404
+import requests, json
+
+from django.utils.timezone import datetime
 from django.shortcuts import render
 from django.http import HttpResponse
+
+from public_profile.models import PublicProfile
+
+BASE_URL = 'https://alpha.programmers.co.kr/api/job_profiles/public/'
 
 def dark_profile(request, cover_name):
   width = 400
   height = 200
 
-  name = 'Koa'
-  email = 'koa@grepp.co'
-  primary_tags = ['Ruby on rails', 'Python3', 'C++']
-  secondary_tags = ['C', 'test', 'test22', 'test22', 'test22', 'test22', 'test22', 'test22', 'test22', 'test22', 'test22', 'test22']
+  public_profile, created = PublicProfile.objects.get_or_create(cover_name = cover_name)
 
-  primary_tags_svg = get_primary_tags_svg(primary_tags)
+  if created or public_profile.updated_at.date() != datetime.today().date():
+    url = BASE_URL + cover_name
+    try:
+      response = requests.get(url).json()
+      resume = response['resume']
 
-  secondary_tags_svg = get_secondary_tags_svg(secondary_tags)
+      public_profile.name = resume['name'] if 'name' in resume else ''
+      public_profile.email = resume['email'] if 'email' in resume else ''
+      
+      public_profile.primary_tags.add(resume['primary_tags'] if 'primary_tags' in resume else [])
+      public_profile.primary_tags.add(resume['secondary_tags'] if 'secondary_tags' in resume else [])
+
+      public_profile.save()
+
+    except:
+      return Http404
+
+  primary_tags_svg = get_primary_tags_svg(public_profile.primary_tags.names())
+
+  secondary_tags_svg = get_secondary_tags_svg(public_profile.secondary_tags.names())
 
   svg = '''
     <svg height="{height}" width="{width}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}">
@@ -83,8 +105,8 @@ def dark_profile(request, cover_name):
   '''.format(
     width=width,
     height=height,
-    email=email,
-    name=name,
+    email=public_profile.email,
+    name=public_profile.name,
     primary_tags_svg=primary_tags_svg,
     secondary_tags_svg=secondary_tags_svg,
   )
