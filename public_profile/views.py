@@ -1,4 +1,4 @@
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponseNotFound
 import requests
 
 from django.utils.timezone import datetime
@@ -20,7 +20,7 @@ def dark_profile(request, cover_name):
   public_profile = get_public_profile(cover_name)
   
   if public_profile == None:
-    return Http404
+    return HttpResponseNotFound()
 
   primary_tags_svg, y_lines = get_primary_tags_svg(public_profile.primary_tags.names())
 
@@ -45,7 +45,7 @@ def light_profile(request, cover_name):
   public_profile = get_public_profile(cover_name)
   
   if public_profile == None:
-    return Http404
+    return HttpResponseNotFound()
 
   primary_tags_svg, y_lines = get_primary_tags_svg(public_profile.primary_tags.names())
 
