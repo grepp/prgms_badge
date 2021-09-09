@@ -1,8 +1,7 @@
 from django.http.response import Http404
-import requests, json
+import requests
 
 from django.utils.timezone import datetime
-from django.shortcuts import render
 from django.http import HttpResponse
 
 from public_profile.models import PublicProfile
