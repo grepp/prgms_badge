@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 from public_profile.models import PublicProfile
 
-BASE_URL = 'https://alpha.programmers.co.kr/api/job_profiles/public/'
+BASE_URL = 'https://programmers.co.kr/api/job_profiles/public/'
 
 def dark_profile(request, cover_name):
   width = 400
