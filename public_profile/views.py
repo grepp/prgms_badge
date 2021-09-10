@@ -9,7 +9,7 @@ from public_profile.models import PublicProfile
 DEFAULT_WIDTH = 400
 DEFAULT_HEIGHT = 120
 
-HEIGHT_PER_LINE = 10
+HEIGHT_PER_LINE = 12
 
 BASE_URL = 'https://programmers.co.kr/api/job_profiles/public/'
 
@@ -147,17 +147,16 @@ def get_public_profile(cover_name):
   if created or public_profile.updated_at.date() != datetime.today().date():
     url = BASE_URL + cover_name
     try:
-      response = requests.get(url).json()
+      response = requests.get(url, timeout=10).json()
       resume = response['resume']
 
       public_profile.name = resume['name'] if 'name' in resume else ''
       public_profile.email = resume['email'] if 'email' in resume else ''
       
-      public_profile.primary_tags.add(resume['primary_tags'] if 'primary_tags' in resume else [])
-      public_profile.primary_tags.add(resume['secondary_tags'] if 'secondary_tags' in resume else [])
+      public_profile.primary_tags.add(*[tagDict['name'] for tagDict in resume['primaryTags']] if 'primaryTags' in resume else [])
+      public_profile.secondary_tags.add(*[tagDict['name'] for tagDict in resume['secondaryTags']] if 'secondaryTags' in resume else [])
 
       public_profile.save()
-
     except:
       return None
   return public_profile
