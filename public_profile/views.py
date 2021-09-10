@@ -251,4 +251,4 @@ def get_tag_rect_width_by_tag_str(tag: str):
   len_blank = tag.count(' ')
   len_without_blank = len(tag) - len_blank
 
-  return default_width + len_blank + len_without_blank * 6
+  return default_width + len_blank * 3 + len_without_blank * 6
