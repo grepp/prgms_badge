@@ -30,7 +30,7 @@ def dark_profile(request, cover_name):
 
   height += 30 + y_lines * HEIGHT_PER_LINE if y_lines > 0 else 0
 
-  svg = get_svg(width, height, public_profile.email, public_profile.name, primary_tags_svg, secondary_tags_svg, 'dark')
+  svg = get_svg(cover_name, width, height, public_profile.email, public_profile.name, primary_tags_svg, secondary_tags_svg, 'dark')
 
   response = HttpResponse(content=svg)
   response['Content-Type'] = 'image/svg+xml'
@@ -55,14 +55,14 @@ def light_profile(request, cover_name):
 
   height += 30 + y_lines * HEIGHT_PER_LINE if y_lines > 0 else 0
 
-  svg = get_svg(width, height, public_profile.email, public_profile.name, primary_tags_svg, secondary_tags_svg, 'light')
+  svg = get_svg(cover_name, width, height, public_profile.email, public_profile.name, primary_tags_svg, secondary_tags_svg, 'light')
 
   response = HttpResponse(content=svg)
   response['Content-Type'] = 'image/svg+xml'
   response['Cache-Control'] = 'no-cache'
   return response
 
-def get_svg(width, height, email, name, primary_tags_svg, secondary_tags_svg, version):
+def get_svg(cover_name, width, height, email, name, primary_tags_svg, secondary_tags_svg, version):
   main_rect_style = 'fill:#0c151c;' if version == 'dark' else 'fill:#fff;stroke-width:0.15rem;stroke:#d7e2eb;'
   main_text_color = '#fff' if version == 'dark' else '#000'
 
@@ -111,26 +111,29 @@ def get_svg(width, height, email, name, primary_tags_svg, secondary_tags_svg, ve
           }}
         </style>
       </defs>
-      <g>
+      <a href="https://programmers.co.kr/pr/{cover_name}" target="_blank" rel="noopener">
         <g>
-          <rect class="main-rect" width="{width}" height="{height}" rx="14"/>
-          <text class="name-text" transform="translate(22.88 48.22)">
-            {name}
-          </text>
-          <g id="icons">
-            <g id="ic-email-14">
-              <path id="path" class="cls-3" d="M26.85,64.4H34a1.43,1.43,0,0,1,1.43,1.43v5.71A1.43,1.43,0,0,1,34,73H26.85a1.43,1.43,0,0,1-1.43-1.43V65.83A1.43,1.43,0,0,1,26.85,64.4Zm7.85,2.5-4.28,2.86L26.13,66.9V65.83l4.29,2.86,4.28-2.86Z"/>
+          <g>
+            <rect class="main-rect" width="{width}" height="{height}" rx="14"/>
+            <text class="name-text" transform="translate(22.88 48.22)">
+              {name}
+            </text>
+            <g id="icons">
+              <g id="ic-email-14">
+                <path id="path" class="cls-3" d="M26.85,64.4H34a1.43,1.43,0,0,1,1.43,1.43v5.71A1.43,1.43,0,0,1,34,73H26.85a1.43,1.43,0,0,1-1.43-1.43V65.83A1.43,1.43,0,0,1,26.85,64.4Zm7.85,2.5-4.28,2.86L26.13,66.9V65.83l4.29,2.86,4.28-2.86Z"/>
+              </g>
             </g>
+            <text class="email-text" transform="translate(43.98 72.52)">
+              {email}
+            </text>
+            {primary_tags_svg}
+            {secondary_tags_svg}
           </g>
-          <text class="email-text" transform="translate(43.98 72.52)">
-            {email}
-          </text>
-          {primary_tags_svg}
-          {secondary_tags_svg}
         </g>
-      </g>
+      </a>
     </svg>
   '''.format(
+    cover_name=cover_name,
     main_rect_style=main_rect_style,
     main_text_color=main_text_color,
     width=width,
