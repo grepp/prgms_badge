@@ -9,7 +9,7 @@ from public_profile.models import PublicProfile
 DEFAULT_WIDTH = 400
 DEFAULT_HEIGHT = 120
 
-HEIGHT_PER_LINE = 12
+HEIGHT_PER_LINE = 13
 
 BASE_URL = 'https://programmers.co.kr/api/job_profiles/public/'
 
@@ -70,6 +70,9 @@ def get_svg(cover_name, width, height, email, name, primary_tags_svg, secondary_
     <svg height="{height}" width="{width}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}">
       <defs>
         <style>
+          <![CDATA[
+            @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+          ]]>
           .main-rect {{
             {main_rect_style}
           }}
@@ -87,21 +90,21 @@ def get_svg(cover_name, width, height, email, name, primary_tags_svg, secondary_
             fill:#E9ECF3;
           }}
           .name-text,.tag-text {{
-            font-family:HelveticaNeue, Helvetica Neue;
+            font-family:'Noto Sans KR', sans-serif;
           }}
           .cls-3 {{
             fill:#b2c0cc;fill-rule:evenodd;
           }}
           .email-text {{
             font-size:14px;
-            font-family:HelveticaNeue-Medium, Helvetica Neue;
+            font-family:'Noto Sans KR', sans-serif;
           }}
           .cls-5 {{
             letter-spacing:-0.02em;
           }}
           .primary_tag-title {{
             font-size:13px;
-            font-family:SourceHanSansKR-Normal-KSCpc-EUC-H, Source Han Sans KR;
+            font-family:'Noto Sans KR', sans-serif;
           }}
           .primary-tag-text {{
             fill: #FBFBFD;
@@ -204,8 +207,8 @@ def get_primary_tags_svg(tags):
 
 def get_secondary_tags_svg(tags, is_primary_tags_exist):
   RECT_START_X = 25.33
-  TITLE_TEXT_Y = 136.97 if is_primary_tags_exist else 106.97
-  RECT_START_Y = 145 if is_primary_tags_exist else 115
+  TITLE_TEXT_Y = 138.97 if is_primary_tags_exist else 106.97
+  RECT_START_Y = 147 if is_primary_tags_exist else 115
   MAX_X = 350
   MARGIN_BETWEEN_TAG = 3
   RECT_RX = 3
@@ -252,6 +255,7 @@ def get_secondary_tags_svg(tags, is_primary_tags_exist):
 def get_tag_rect_width_by_tag_str(tag: str):
   default_width = 14
   len_blank = tag.count(' ')
-  len_without_blank = len(tag) - len_blank
+  len_sign = tag.count('.')
+  len_without_blank = len(tag) - len_blank - len_sign
 
-  return default_width + len_blank * 3 + len_without_blank * 6
+  return default_width + len_blank * 3 + len_sign * 1.5 + len_without_blank * 6
