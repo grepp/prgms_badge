@@ -158,7 +158,10 @@ def get_public_profile(cover_name):
 
       public_profile.name = resume['name'] if 'name' in resume else ''
       public_profile.email = resume['email'] if 'email' in resume else ''
-      
+
+      public_profile.primary_tags.clear()
+      public_profile.secondary_tags.clear()
+
       public_profile.primary_tags.add(*[tagDict['name'] for tagDict in resume['primaryTags']] if 'primaryTags' in resume else [])
       public_profile.secondary_tags.add(*[tagDict['name'] for tagDict in resume['secondaryTags']] if 'secondaryTags' in resume else [])
 
