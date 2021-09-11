@@ -11,3 +11,8 @@
 
 ![dark](https://prgms-badge.herokuapp.com/pr/dark/koa)
 ![light](https://prgms-badge.herokuapp.com/pr/light/koa)
+
+```
+![dark](https://prgms-badge.herokuapp.com/pr/dark/koa)
+![light](https://prgms-badge.herokuapp.com/pr/light/koa)
+```
